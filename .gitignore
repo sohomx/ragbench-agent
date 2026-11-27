@@ -221,3 +221,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# eval stub output (real run results in runs/ are committed on purpose)
+runs/latest-stub.json

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sohomx/ragbench-agent/questions/schema.json",
+  "title": "gold question",
+  "description": "one line of questions/gold.jsonl",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "question", "answerable", "gold_answer", "gold_passages", "tags"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^q[0-9]+$"},
+    "question": {"type": "string", "minLength": 1},
+    "answerable": {"type": "boolean"},
+    "gold_answer": {"type": ["string", "null"]},
+    "gold_passages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["doc_id", "start_char", "end_char", "text"],
+        "properties": {
+          "doc_id": {"type": "string", "minLength": 1},
+          "start_char": {"type": "integer", "minimum": 0},
+          "end_char": {"type": "integer", "minimum": 0},
+          "text": {"type": "string"}
+        }
+      }
+    },
+    "tags": {"type": "array", "items": {"type": "string"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"answerable": {"const": false}}},
+      "then": {
+        "properties": {
+          "gold_answer": {"type": "null"},
+          "gold_passages": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"answerable": {"const": true}}},
+      "then": {
+        "properties": {
+          "gold_answer": {"type": "string", "minLength": 1},
+          "gold_passages": {"minItems": 1}
+        }
+      }
+    }
+  ]
+}
